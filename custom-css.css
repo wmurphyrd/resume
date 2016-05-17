@@ -203,6 +203,9 @@ p {
   margin-top: -15px;
 }
 
+.resume-text {
+  width: 4.7in;
+}
 
 /* #jobs-table tr:nth-child(even) td:nth-child(1),
 #jobs-table tr:nth-child(even) td:nth-child(2),

@@ -5,9 +5,9 @@ css: custom-css.css
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = F)
 library(knitr); library(xtable); library(dplyr); library(ggplot2)
 library(wordcloud)
+knitr::opts_chunk$set(echo = F)
 ```
 
 ```{r data}
@@ -17,7 +17,9 @@ dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
   #this
   mutate_each(funs(gsub("\\n", "\n", ., fixed = T))) %>%
   # preserve ordering of groups by creating factors manually
-  mutate_each(funs(factor(., levels = unique(.))), group, subgroup)
+  mutate_each(funs(factor(., levels = unique(.))), group, subgroup) %>%
+  mutate(priority = as.numeric(priority))
+
 ```
 
 ```{r functions}
@@ -40,6 +42,7 @@ writeResumeTable <- function(table) {
     })] %>% union("subgroup")
     table <- table %>% arrange(desc(date)) %>% 
       select_(.dots = notEmpty) %>% select(-date)
+    cssClass <- "table resume-text"
   } else {
     srt <- regmatches(table$date, regexpr("\\d{4}", table$date)) %>%
       as.numeric() %>%
@@ -57,6 +60,7 @@ writeResumeTable <- function(table) {
             setdiff(names(table), c("text", "group", "subgroup"))] <- ""
       table <- table[order(c(origRows, textRows)), ]
     }
+    cssClass <- "table"
   }
   
   htmlTable <- capture.output(
@@ -64,7 +68,8 @@ writeResumeTable <- function(table) {
       xtable() %>%
       print(type = "html", include.rownames = F, include.colnames = F,
             html.table.attributes = paste0('id = "', gsub(" ", "", subgroup),
-                                           '-table" class = "resume-table"'))
+                                           '-table" class = "resume-', cssClass,
+                                           '"'))
   )
   # add in the colspan property for rows with nothing but the text field
   htmlTable <- paste(htmlTable, collapse = "\n")
@@ -88,7 +93,7 @@ resumeGroup <- function(x) {
   # ensure some items remain after priority filtering to avoid printing
   # empty section headers
   if(nrow(x)) {
-    cat("\n## ", as.character(x$group[1]))
+    cat("\n## ", as.character(x$group[1]), "\n")
     if(summary) {
       plt <- ggplot(allEntries, aes(x = 1, fill = subgroup)) +
         geom_bar() + 
@@ -148,5 +153,22 @@ dat %>% filter(type == "text") %>%
   select(-type) %>%
   split(., .$group) %>%
   lapply(resumeGroup) %>% invisible()
+```
+
+```{r clouds, fig.height=3, fig.width=3, warning=FALSE, results='asis', fig.pos='right'}
+
+dat %>% filter(type == "wordcloud") %>%
+  split(., .$group) %>%
+  lapply(function(x) {
+    if(nrow(x) < 1) return()
+    cat("## ", as.character(x$group[1]), "\n")
+    wordcloud(x$title, x$priority, min.freq = 0,
+              random.order = F, colors = brewer.pal(8, "Dark2"),
+              scale = c(2, .1))
+  }) %>% invisible()
+  
+  #cat('<div id = "skillcloud">\n')
+
+  #cat("</div>")
 ```
 <p id="footer">Created with knitr. Source available at http://github.com/wmurphyrd/resume</p>
