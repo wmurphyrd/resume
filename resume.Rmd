@@ -20,12 +20,12 @@ data.frame('william@datatitian.com', "\\(505) 615-2013",
 ```
 
 
-```{r content, results='asis', fig.height=1.5, fig.width=7, fig.align='center'}
+```{r content, results='asis', fig.height=.75, fig.width=7.5, fig.align='center'}
 # read in data from a spreadsheet and write it to the document as tables
 dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
   #read table escapes the newline characters while reading them in, correct
   #this
-  mutate(text = gsub("\\n", "\n", text, fixed = T)) %>%
+  mutate_each(funs(gsub("\\n", "\n", ., fixed = T))) %>%
   # preserve ordering of groups by creating factors manually
   mutate_each(funs(factor(., levels = unique(.))), group, subgroup)
 writeResumeTable <- function(table) {
@@ -43,7 +43,7 @@ writeResumeTable <- function(table) {
     table$date <- as.Date(table$date, format = "%m/%d/%Y")
     notEmpty <- names(table)[sapply(table, function(x){
       max(nchar(as.character(x))) > 0
-    })]
+    })] %>% union("subgroup")
     table <- table %>% arrange(desc(date)) %>% 
       select_(.dots = notEmpty) %>% select(-date)
   } else {
@@ -52,21 +52,32 @@ writeResumeTable <- function(table) {
       order(decreasing = T)
     table <- table[srt, ]
     # if there are text notes, move them onto their own row (by duplicating rows
-    # and deleting extra data). xtable can't do cells that span multiple
-    # columns, so we capture the output and add that in manually
+    # and deleting extra data) and have them span the whole table width. xtable 
+    # can't do colspans, so we capture its output and add that in manually below
     if(max(nchar(table$text)) > 0) {
-      table <- table[sort(rep(seq_len(nrow(table)), 2)), ]
-      table[seq(1, nrow(table), by = 2), "text"] <- ""
-      table[seq(2, nrow(table), by = 2), 
+      origRows <- seq_len(nrow(table))
+      textRows <- which(table$text != "")
+      table <- table[c(origRows, textRows), ]
+      table[origRows, "text"] <- ""
+      table[seq(max(origRows) + 1, nrow(table)), 
             setdiff(names(table), c("text", "group", "subgroup"))] <- ""
+      table <- table[order(c(origRows, textRows)), ]
     }
   }
   
-  table %>% select(-group, -subgroup, -priority) %>%
-    xtable() %>%
-    print(type = "html", include.rownames = F, include.colnames = F,
-          html.table.attributes = paste0('id = "', gsub(" ", "", subgroup),
-                                         '-table" class = "resume-table"'))
+  htmlTable <- capture.output(
+    table %>% select(-group, -subgroup, -priority) %>%
+      xtable() %>%
+      print(type = "html", include.rownames = F, include.colnames = F,
+            html.table.attributes = paste0('id = "', gsub(" ", "", subgroup),
+                                           '-table" class = "resume-table"'))
+  )
+  # add in the colspan property for rows with nothing but the text field
+  htmlTable <- paste(htmlTable, collapse = "\n")
+  gsub("(<td>  </td> ){3}<td>(.*?)</td> <td>  </td>",
+       "<td colspan = 5>\\2</td>", htmlTable) %>% 
+    cat()
+  
 }
 
 split(dat, dat$group) %>%
@@ -91,21 +102,21 @@ split(dat, dat$group) %>%
           # label the count in the middle of each bar
           geom_text(aes(y = cumsum(..count..) - ..count.. / 2, 
                         label = ..count..), stat = "count",
-                    size = 10) +
+                    size = 6) +
           geom_text(aes(y = cumsum(..count..) - ..count.. / 2,
                         label = subgroup, 
                         x = ifelse(as.integer(subgroup) %% 2 == 0, 
-                                   1.75, .25)),
+                                   1.9, .1)),
                     stat = "count") +
           geom_segment(aes(y = cumsum(..count..) - ..count.. / 2,
                            yend = cumsum(..count..) - ..count.. / 2,
                            x = ifelse(as.integer(subgroup) %% 2 == 0, 
-                                      1.5, .5),
+                                      1.45, .55),
                            xend = ifelse(as.integer(subgroup) %% 2 == 0, 
-                                         1.60, .4)),
+                                         1.65, .35)),
                        stat = "count") +
           scale_fill_brewer(palette = "BuGn", direction = -1) +
-          coord_flip(xlim = c(0.1,1.9)) +
+          coord_flip(xlim = c(-.15,2)) +
           theme_classic() +
           theme(axis.text = element_blank(), 
                 axis.ticks = element_blank(),
@@ -113,21 +124,11 @@ split(dat, dat$group) %>%
                 axis.title = element_blank(),
                 legend.position = "none")
         print(plt)
-        cat("\n## Selected ", as.character(x$group[1]))
+        cat('\n <p id="selected-items">Selected Items:</p>\n')
       }
       lapply(split(x, x$subgroup), writeResumeTable)
     }
   }) %>% invisible()
-#  dat %>% filter(group == "Training and Education") %>%
-#     split(., as.character(.$subgroup)) ->
-#     datSplit
-# lapply(names(datSplit), function(x) {
-#     cat("### ", x)
-#     datSplit[[x]] %>% select(-group, -subgroup) %>%
-#         xtable() %>%
-#         print(type = "html", include.rownames = F, include.colnames = F,
-#           html.table.attributes = paste('border = 1 id = "education-table"',
-#                                         'class = "resume-table"'))
-# }) %>% invisible()
-```
 
+```
+<p id="footer">Created with knitr. Source available at http://github.com/wmurphyrd/resume</p>

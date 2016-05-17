@@ -14,11 +14,15 @@ h1 {
 }
 
 h2 { 
-   font-size:1.8em; 
+   font-size:14pt; 
+   margin-bottom: 0;
+   margin-top: 1.5px;
 }
 
 h3 { 
-   font-size:1.4em; 
+   font-size:12pt; 
+   margin-top: 1.5px;
+   margin-bottom: 0;
 }
 
 h4 { 
@@ -111,11 +115,11 @@ hr {
    }
 
    @page :left { 
-      margin: 15mm 20mm 15mm 10mm; 
+      margin: 15mm 10mm 5mm 10mm; 
    }
      
    @page :right { 
-      margin: 15mm 10mm 15mm 20mm; 
+      margin: 15mm 10mm 5mm 10mm; 
    }
 
    p, h2, h3 { 
@@ -128,6 +132,12 @@ hr {
    a[href]:after {
     content: none !important;
   }
+  h1 {
+    font-size:1.8em;
+  }
+  p {
+    font-size: 10pt;
+  }
 }
 
 .resume-table {
@@ -135,7 +145,7 @@ hr {
 }
 .resume-table td {
    /* text-align: left; */
-    padding: 3px 5px 3px 5px
+    padding: 1.5px 5px 3px 1.5px
 }
 .resume-table td+td+td+td+td {
     float: right;
@@ -144,7 +154,7 @@ hr {
 }
 
 #contact-table {
-    width: 75%;
+    width: 80%;
     margin: 0 auto;
     text-align: center;
 }
@@ -164,6 +174,35 @@ hr {
     width: 99%;
     text-align: center;
 }
+
+ul, ol {
+  margin-bottom: 0;
+}
+
+/* the markdown parser is bugging and placing some <li> outside of their <ul>
+these rules correct their appearance */
+td>li {
+  padding-left: 27px
+}
+
+td>li p {
+  margin-bottom: 0
+}
+
+p {
+  margin-bottom: 0; 
+}
+
+#footer {
+  display: block;
+  text-align: center;
+  margin-top: 15px;
+}
+
+#selected-items {
+  margin-top: -15px;
+}
+
 
 /* #jobs-table tr:nth-child(even) td:nth-child(1),
 #jobs-table tr:nth-child(even) td:nth-child(2),
