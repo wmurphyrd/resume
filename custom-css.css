@@ -207,6 +207,12 @@ p {
   width: 4.7in;
 }
 
+
+#wordcloud {
+  float: right;  
+}
+
+
 /* #jobs-table tr:nth-child(even) td:nth-child(1),
 #jobs-table tr:nth-child(even) td:nth-child(2),
 #jobs-table tr:nth-child(even) td:nth-child(3),
