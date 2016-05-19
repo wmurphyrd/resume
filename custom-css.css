@@ -148,7 +148,7 @@ hr {
    /* text-align: left; */
     padding: 1.5px 5px 3px 1.5px
 }
-.resume-table td+td+td+td+td {
+.resume-table td:nth-child(5) {
     float: right;
     width: 8em;
     margin: 0
@@ -168,6 +168,15 @@ hr {
 
 #contact-table td {
     width: 33%;
+    padding: 1px 0;
+}
+
+#contact-table td:first-child {
+  padding-left: 8px;
+}
+
+#contact-table td:last-child {
+  padding-right: 8px;
 }
 
 .title {
