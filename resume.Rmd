@@ -11,6 +11,7 @@ knitr::opts_chunk$set(echo = F)
 ```
 
 ```{r data}
+contact <- read.csv("contact.csv", stringsAsFactors = F, header = F)
 # read in data from a spreadsheet and write it to the document as tables
 dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
   #read table escapes the newline characters while reading them in, correct
@@ -90,8 +91,7 @@ resumeGroup <- function(x, type, header = T) {
 ```
 
 ```{r contact, results='asis'}
-data.frame('william@datatitian.com', "\\(505) 615-2013",
-           "http://github.com/wmurphyrd") %>%
+contact %>%
   xtable() %>%
   print(type = "html", include.rownames = F, include.colnames = F,
         html.table.attributes = 'border = 1 id = "contact-table"')
