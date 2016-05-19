@@ -37,8 +37,9 @@ h6 {
    font-size:0.8em; 
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, p.wordcloud {
     font-family: georgia, serif;
+    font-weight: bold;
 }
 
 a:visited {
@@ -115,11 +116,11 @@ hr {
    }
 
    @page :left { 
-      margin: 15mm 10mm 5mm 10mm; 
+      margin: 10mm 10mm 5mm 10mm; 
    }
      
    @page :right { 
-      margin: 15mm 10mm 5mm 10mm; 
+      margin: 10mm 10mm 5mm 10mm; 
    }
 
    p, h2, h3 { 
@@ -203,27 +204,25 @@ p {
   margin-top: -15px;
 }
 
-.resume-text {
-  width: 4.7in;
+.wordcloudwrapper {
+  float: right; 
 }
 
-
-#wordcloud {
-  float: right;  
+img.wordcloud {
+  margin: -10px;
 }
 
+/* wrapper centering trick for floated divs: outside shifted 50% makes the 
+content start at the midpoint of the next parent container, inside shifted -50%
+centers it about that midpoint */
+/*.wordcloudtextwrapper {
+  position: relative;
+  right:50%;
+}*/
 
-/* #jobs-table tr:nth-child(even) td:nth-child(1),
-#jobs-table tr:nth-child(even) td:nth-child(2),
-#jobs-table tr:nth-child(even) td:nth-child(3),
-#jobs-table tr:nth-child(even) td:nth-child(5) {
-    display: none;
+p.wordcloud {
+  position: relative;
+  text-align: center;
+  top: 0.1in;
+  font-size:12pt;
 }
-#jobs-table tr:nth-child(even) td:nth-child(4) {
-    float: left;
-    width: 265%
-}
-#jobs-table tr:nth-child(odd) td:nth-child(4) {
-    display: none;
-}
-*/
