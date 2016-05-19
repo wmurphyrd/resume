@@ -209,7 +209,7 @@ p {
 }
 
 img.wordcloud {
-  margin: -10px;
+  margin: -15px -10px -25px -10px;
 }
 
 /* wrapper centering trick for floated divs: outside shifted 50% makes the 

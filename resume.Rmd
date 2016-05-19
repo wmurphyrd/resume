@@ -151,9 +151,9 @@ if(nrow(wc) > 1) {
       '<div class="wordcloudtextwrapper">',
       '<p class="wordcloud">',
       as.character(wc$subgroup[1]), "</p></div>")
-  wordcloud(wc$title, wc$priority, min.freq = 0, random.order = T, 
+  wordcloud(wc$title, wc$priority, min.freq = 0, random.order = F, 
             colors = brewer.pal(pmin(8, length(unique(wc$priority))), "Dark2"),
-            scale = c(1.25, .15))
+            scale = c(1.5, .25))
   cat("</div>\n")
 }
   
