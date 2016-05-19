@@ -12,7 +12,6 @@ knitr::opts_chunk$set(echo = F)
 
 ```{r data}
 contact <- read.csv("contact.csv", stringsAsFactors = F, header = F)
-# read in data from a spreadsheet and write it to the document as tables
 dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
   #read table escapes the newline characters while reading them in, correct
   #this
@@ -24,6 +23,7 @@ dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
 ```
 
 ```{r functions}
+# renders tabular resume data
 writeResumeTable <- function(table) {
   # skip over empty splits created for subgroup-group combos that don't exist
   if(nrow(table) < 1) return()
@@ -31,6 +31,8 @@ writeResumeTable <- function(table) {
   subgroup = as.character(table$subgroup[1])
   if(subgroup != "")cat("\n### ", subgroup, "\n") else subgroup <- "nosubgroup"
   
+  #sorting by the first 4-digit year while allowing for the field to display a
+  #range of years or other text as well
   srt <- regmatches(table$date, regexpr("\\d{4}", table$date)) %>%
     as.numeric() %>%
     order(decreasing = T)
@@ -39,6 +41,7 @@ writeResumeTable <- function(table) {
   if(max(nchar(table$text)) > 0) {
     origRows <- seq_len(nrow(table))
     textRows <- which(table$text != "")
+    #duplicate the rows with text, then clear out other fields
     table <- table[c(origRows, textRows), ]
     table[origRows, "text"] <- ""
     table[seq(max(origRows) + 1, nrow(table)), 
@@ -54,8 +57,8 @@ writeResumeTable <- function(table) {
             html.table.attributes = paste0('id = "', gsub(" ", "", subgroup),
                                            '-table" class = "resume-table"'))
   )
-  # for rows with the isolated text notes, expand text notethat column to full
-  # width of table
+  # for rows with the isolated text notes, expand that column to full
+  # width of table via colspan attribute
   htmlTable <- paste(htmlTable, collapse = "\n")
   gsub("(<td>  </td> ){3}<td>(.*?)</td> <td>  </td>",
        "<td colspan = 5>\\2</td>", htmlTable) %>% 
@@ -63,6 +66,8 @@ writeResumeTable <- function(table) {
   
 }
 
+
+# renders text entries as <p> elements
 writeResumeText <- function(dat) {
   if(nrow(dat) < 1) return()
   subgroup = as.character(dat$subgroup[1])
@@ -73,6 +78,8 @@ writeResumeText <- function(dat) {
     cat()
 }
 
+# renders group heading, performs priority filtering, and calls appropriate
+# renderers for the subgroups
 resumeGroup <- function(x, type, header = T) {
   # hide rows without NA or 0 priority 
   # (unless the whole section has no marked priorites)
@@ -91,6 +98,7 @@ resumeGroup <- function(x, type, header = T) {
 ```
 
 ```{r contact, results='asis'}
+# contact info ribbon below the name
 contact %>%
   xtable() %>%
   print(type = "html", include.rownames = F, include.colnames = F,
@@ -99,6 +107,7 @@ contact %>%
 ```
 
 ```{r tables, results='asis'}
+# all tabular data
 dat %>% filter(type == "table") %>%
   select(-type) %>%
   split(., .$group) %>%
@@ -107,29 +116,28 @@ dat %>% filter(type == "table") %>%
 ```
 
 ```{r summary, results='asis', fig.height=.75, fig.width=7.5, fig.align='center'}
+# summary chart
 allEntries <- filter(dat, type == "text")
 cat("\n## ", as.character(allEntries$group[1]), "\n")
 plt <- ggplot(allEntries, aes(x = 1, fill = subgroup)) +
   geom_bar() + 
-  # label the count in the middle of each bar
+  # using the ..count.. variable created by stat = "count", we can calculate the
+  # middle of the middle of each bar to align the labels
   geom_text(aes(y = cumsum(..count..) - ..count.. / 2, 
-                label = ..count..), stat = "count",
-            size = 6) +
+                label = ..count..), 
+            stat = "count", size = 6) +
   #label the categories on alternating sides of the bars
   geom_text(aes(y = cumsum(..count..) - ..count.. / 2,
                 label = subgroup, 
-                x = ifelse(as.integer(subgroup) %% 2 == 0, 
-                           1.9, .1)),
+                x = ifelse(as.integer(subgroup) %% 2 == 0, 1.9, .1)),
             stat = "count") +
   # tick marks for category labels
   geom_segment(aes(y = cumsum(..count..) - ..count.. / 2,
                    yend = cumsum(..count..) - ..count.. / 2,
-                   x = ifelse(as.integer(subgroup) %% 2 == 0, 
-                              1.45, .55),
-                   xend = ifelse(as.integer(subgroup) %% 2 == 0, 
-                                 1.65, .35)),
+                   x = ifelse(as.integer(subgroup) %% 2 == 0, 1.45, .55),
+                   xend = ifelse(as.integer(subgroup) %% 2 == 0, 1.65, .35)),
                stat = "count") +
-  scale_fill_brewer(palette = "BuGn", direction = -1) +
+  scale_fill_brewer(palette = "Dark2") +
   coord_flip(xlim = c(-.15,2)) +
   theme_classic() +
   theme(axis.text = element_blank(), 
@@ -144,7 +152,7 @@ print(plt)
 <p id="selected-items">Select Items:</p>
 
 ```{r clouds, fig.height=3, fig.width=3, warning=FALSE, results='asis', fig.pos='center', out.extra='class = "wordcloud"'}
-
+# generate the wordcloud
 wc <- dat %>% filter(type == "wordcloud") 
 if(nrow(wc) > 1) {
   cat('\n<div class="wordcloudwrapper">',
@@ -160,6 +168,7 @@ if(nrow(wc) > 1) {
 ```
 
 ```{r texts, results='asis'}
+# render the text entries
 dat %>% filter(type == "text") %>%
   select(-type) %>%
   split(., .$group) %>%

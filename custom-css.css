@@ -130,6 +130,7 @@ hr {
    h2, h3 { 
       page-break-after: avoid; 
    }
+   /* override Chrome's autmatic printing of urls after links */
    a[href]:after {
     content: none !important;
   }
@@ -145,9 +146,9 @@ hr {
     width: 100%
 }
 .resume-table td {
-   /* text-align: left; */
     padding: 1.5px 5px 3px 1.5px
 }
+/* align the dates column */
 .resume-table td:nth-child(5) {
     float: right;
     width: 8em;
@@ -220,14 +221,6 @@ p {
 img.wordcloud {
   margin: -15px -10px -25px -10px;
 }
-
-/* wrapper centering trick for floated divs: outside shifted 50% makes the 
-content start at the midpoint of the next parent container, inside shifted -50%
-centers it about that midpoint */
-/*.wordcloudtextwrapper {
-  position: relative;
-  right:50%;
-}*/
 
 p.wordcloud {
   position: relative;
