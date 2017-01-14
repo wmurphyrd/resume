@@ -149,7 +149,7 @@ print(plt)
 
 ```
 
-<p id="selected-items">Select Items:</p>
+<p id="selected-items">Selected items:</p>
 
 ```{r clouds, fig.height=3, fig.width=3, warning=FALSE, results='asis', fig.pos='center', out.extra='class = "wordcloud"'}
 # generate the wordcloud
