@@ -7,9 +7,9 @@ The R markdown code can generate the following types of sections:
 2. A single section of descriptive text entries with the option to save space by displaying a summary bar chart with the counts for each subgroup and listing only priority items in full.
 3. A wordcloud that floats on the right side of the descriptive text section. 
 
-An example with all three sections that uses the summary feature is pictured below:
+[View my summarized resume](https://wmurphyrd.github.io/resume/resume.html)
 
-![example resume](example.png)
+[View my full cv](https://wmurphyrd.github.io/resume/index.html)
 
 The R markdown code reads data from 2 csv files:
 

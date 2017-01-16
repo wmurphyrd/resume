@@ -2,6 +2,8 @@
 title: "William Murphy, M.S., R.D.N."
 output: html_document
 css: custom-css.css
+params:
+    condensed: true
 ---
 
 ```{r setup, include=FALSE}
@@ -83,7 +85,11 @@ writeResumeText <- function(dat) {
 resumeGroup <- function(x, type, header = T) {
   # hide rows without NA or 0 priority 
   # (unless the whole section has no marked priorites)
-  x <- filter(x, (!is.na(priority) & priority > 0) | all(is.na(priority)))
+  x <- filter(
+    x, 
+    (!is.na(priority) & priority > 0) | all(is.na(priority)) |
+      !params$condensed
+  )
   # ensure some items remain after priority filtering to avoid printing
   # empty section headers
   if(nrow(x)) {
@@ -123,24 +129,24 @@ plt <- ggplot(allEntries, aes(x = 1, fill = subgroup)) +
   geom_bar() + 
   # using the ..count.. variable created by stat = "count", we can calculate the
   # middle of the middle of each bar to align the labels
-  geom_text(aes(y = cumsum(..count..) - ..count.. / 2, 
+  geom_text(aes(y = sum(..count..) - cumsum(..count..) + ..count.. / 2, 
                 label = ..count..), 
             stat = "count", size = 6) +
   #label the categories on alternating sides of the bars
-  geom_text(aes(y = cumsum(..count..) - ..count.. / 2,
+  geom_text(aes(y = sum(..count..) - cumsum(..count..) + ..count.. / 2,
                 label = subgroup, 
                 x = ifelse(as.integer(subgroup) %% 2 == 0, 1.9, .1)),
             stat = "count") +
   # tick marks for category labels
-  geom_segment(aes(y = cumsum(..count..) - ..count.. / 2,
-                   yend = cumsum(..count..) - ..count.. / 2,
+  geom_segment(aes(y = sum(..count..) - cumsum(..count..) + ..count.. / 2,
+                   yend =  sum(..count..) - cumsum(..count..) + ..count.. / 2,
                    x = ifelse(as.integer(subgroup) %% 2 == 0, 1.45, .55),
-                   xend = ifelse(as.integer(subgroup) %% 2 == 0, 1.65, .35)),
+                   xend = ifelse(as.integer(subgroup) %% 2 == 0, 1.6, .35)),
                stat = "count") +
   scale_fill_brewer(palette = "Dark2") +
   coord_flip(xlim = c(-.15,2)) +
   theme_classic() +
-  theme(axis.text = element_blank(), 
+  theme(axis.text = element_blank(),
         axis.ticks = element_blank(),
         axis.line = element_blank(),
         axis.title = element_blank(),
@@ -149,7 +155,12 @@ print(plt)
 
 ```
 
-<p id="selected-items">Selected items:</p>
+```{r results='asis'}
+if(params$condensed) {
+  cat('<p id="selected-items">Selected items (complete listing available at [wmurphyrd.github.io/resume](http://wmurphyrd.github.io/resume/)):</p>')
+}
+  
+```
 
 ```{r clouds, fig.height=3, fig.width=3, warning=FALSE, results='asis', fig.pos='center', out.extra='class = "wordcloud"'}
 # generate the wordcloud
