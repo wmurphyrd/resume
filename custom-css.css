@@ -14,8 +14,10 @@ tt, code, pre {
    font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
 }
 
-h1 { 
-   font-size:2.2em; 
+/* overqualify again to override knitr */
+#header > h1.title { 
+   font-size: 32px; 
+   letter-spacing: 2px;
 }
 
 h2 { 
@@ -139,9 +141,6 @@ hr {
    a[href]:after {
     content: none !important;
   }
-  h1 {
-    font-size:1.8em;
-  }
   p {
     font-size: 10pt;
   }
@@ -160,7 +159,7 @@ hr {
     margin: 0
 }
 
-#contact-table {
+.header-table {
     width: 80%;
     margin: 0 auto;
     text-align: center;
@@ -172,7 +171,7 @@ hr {
 
 }
 
-#contact-table td {
+.header-table td {
     width: 33%;
     padding: 1px 0;
 }
@@ -246,3 +245,12 @@ p.resume-text {
   margin-bottom: 3px;
 }
 
+#subtitle td {
+  font-size: 16px;
+  color: #777;
+  font-family: arial, sans-serif;
+}
+
+#subtitle td:nth-child(even) {
+  width: 10px;
+}

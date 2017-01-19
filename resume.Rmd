@@ -104,11 +104,28 @@ resumeGroup <- function(x, type, header = T) {
 ```
 
 ```{r contact, results='asis'}
+#subtitle
+if(nrow(contact) > 1) {
+  contact[2, ] %>%
+    as.character() %>%
+    `[`(!is.na(.) & . != "") %>%
+    # instert divider symbol between each entry
+    Reduce(f = function(a, b) append(a, " &#9672; ", b), 
+           x = seq(1, (length(.) - 1) * 2, by = 2), init = .) %>%
+    matrix(nrow = 1) %>%
+    xtable() %>%
+    print(type = "html", include.rownames = F, include.colnames = F,
+          sanitize.text.function = eval,
+          html.table.attributes = 
+            'border=0 id="subtitle" class="header-table"')
+}
 # contact info ribbon below the name
-contact %>%
+contact[1, ] %>%
+  `[`( , !is.na(.) & . != "") %>%
   xtable() %>%
   print(type = "html", include.rownames = F, include.colnames = F,
-        html.table.attributes = 'border = 1 id = "contact-table"')
+        html.table.attributes = 
+          'border=1 id="contact-table" class="header-table"')
 
 ```
 
