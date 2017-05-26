@@ -1,9 +1,11 @@
 ---
 title: "William Murphy, M.S., R.D.N."
-output: html_document
-css: custom-css.css
+output:
+  html_document: default
+  pdf_document: default
 params:
-    condensed: true
+  condensed: yes
+css: custom-css.css
 ---
 
 ```{r setup, include=FALSE}
@@ -153,7 +155,7 @@ plt <- ggplot(allEntries, aes(x = 1, fill = subgroup)) +
   geom_text(aes(y = sum(..count..) - cumsum(..count..) + ..count.. / 2,
                 label = subgroup, 
                 x = ifelse(as.integer(subgroup) %% 2 == 0, 1.9, .1)),
-            stat = "count") +
+            stat = "count", size = 3.5) +
   # tick marks for category labels
   geom_segment(aes(y = sum(..count..) - cumsum(..count..) + ..count.. / 2,
                    yend =  sum(..count..) - cumsum(..count..) + ..count.. / 2,
