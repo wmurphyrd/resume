@@ -14,7 +14,7 @@ library(wordcloud)
 knitr::opts_chunk$set(echo = F)
 ```
 
-```{r data}
+```{r data, include=FALSE}
 contact <- read.csv("contact.csv", stringsAsFactors = F, header = F)
 dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
   #read table escapes the newline characters while reading them in, correct
@@ -188,7 +188,10 @@ if(nrow(wc) > 1) {
   cat('\n<div class="wordcloudwrapper">',
       '<div class="wordcloudtextwrapper">',
       '<p class="wordcloud">',
-      as.character(wc$subgroup[1]), "</p></div>")
+      as.character(wc$subgroup[1]),
+      '</p><span class="wordcloudalttext">Skills: ',
+      paste(wc$title, collapse=", "),
+      '</span></div>')
   wordcloud(wc$title, wc$priority, min.freq = 0, random.order = F, 
             colors = brewer.pal(pmin(8, length(unique(wc$priority))), "Dark2"),
             scale = c(1.5, .25))

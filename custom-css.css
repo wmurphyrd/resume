@@ -29,7 +29,7 @@ h2 {
 h3 { 
    font-size:12pt; 
    margin-top: 1.5px;
-   margin-bottom: 0;
+   margin-bottom: 3px;
 }
 
 h4 { 
@@ -195,20 +195,16 @@ ul, ol {
 }
 
 /* the markdown parser is bugging and placing some <li> outside of their <ul>
-these rules correct their appearance 
-td>li {
-  padding-left: 28px;
-}
+these rules correct their appearance */
 ul li {
-  padding-left: 10px;
+  padding-left: 5px;
 }
-
-td>li p {
-  margin-bottom: 0
-} */
+ul {
+  padding-left: 12px;
+}
 
 p {
-  margin-bottom: 0; 
+  margin-bottom: 5px; 
 }
 
 #footer {
@@ -240,9 +236,16 @@ p.wordcloud {
   font-size:12pt;
 }
 
+.wordcloudalttext {
+  width: 259px;
+  height: 259px;
+  z-index: -1;
+  position: absolute;
+  font-size: 3px;
+}
+
 p.resume-text {
-  line-height: 14px;
-  margin-bottom: 3px;
+  line-height: 16px;
 }
 
 #subtitle td {
