@@ -3,6 +3,7 @@ title: "William Murphy, M.S., R.D.N."
 output:
   html_document: default
   pdf_document: default
+  word_document: default
 params:
   condensed: yes
 css: custom-css.css
@@ -16,7 +17,7 @@ knitr::opts_chunk$set(echo = F)
 
 ```{r data, include=FALSE}
 contact <- read.csv("contact.csv", stringsAsFactors = F, header = F)
-dat <- read.csv("resume-data.csv", stringsAsFactors = F) %>%
+dat <- read.csv("resume-data.csv", stringsAsFactors = F, fileEncoding = "UTF-8") %>%
   #read table escapes the newline characters while reading them in, correct
   #this
   mutate_each(funs(gsub("\\n", "\n", ., fixed = T))) %>%
@@ -65,7 +66,7 @@ writeResumeTable <- function(table) {
   # width of table via colspan attribute
   htmlTable <- paste(htmlTable, collapse = "\n")
   gsub("(<td>  </td> ){3}<td>(.*?)</td> <td>  </td>",
-       "<td colspan = 5>\\2</td>", htmlTable) %>% 
+       "<td colspan = 5>\\2\n\n</td>", htmlTable) %>% 
     cat()
   
 }
@@ -144,6 +145,9 @@ dat %>% filter(type == "table") %>%
 # summary chart
 allEntries <- filter(dat, type == "text")
 cat("\n## ", as.character(allEntries$group[1]), "\n")
+if(params$condensed) {
+  cat('<p id="selected-items">Selected items (complete listing available at [wmurphyrd.github.io/resume](http://wmurphyrd.github.io/resume/))</p>')
+}
 plt <- ggplot(allEntries, aes(x = 1, fill = subgroup)) +
   geom_bar() + 
   # using the ..count.. variable created by stat = "count", we can calculate the
@@ -174,16 +178,9 @@ print(plt)
 
 ```
 
-```{r results='asis'}
-if(params$condensed) {
-  cat('<p id="selected-items">Selected items (complete listing available at [wmurphyrd.github.io/resume](http://wmurphyrd.github.io/resume/)):</p>')
-}
-  
-```
-
 ```{r clouds, fig.height=3, fig.width=3, warning=FALSE, results='asis', fig.pos='center', out.extra='class = "wordcloud"'}
 # generate the wordcloud
-wc <- dat %>% filter(type == "wordcloud") 
+wc <- dat %>% filter(type == "wordcloud", FALSE) 
 if(nrow(wc) > 1) {
   cat('\n<div class="wordcloudwrapper">',
       '<div class="wordcloudtextwrapper">',

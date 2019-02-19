@@ -2,7 +2,7 @@ body, td {
    font-family: arial, sans-serif;
    background-color: white;
    font-size: 12px;
-   margin: 8px;
+   margin: 5px;
 }
 
 /* overqualifying to outspecify rules written into the html by knitr */
@@ -16,7 +16,7 @@ tt, code, pre {
 
 /* overqualify again to override knitr */
 #header > h1.title { 
-   font-size: 32px; 
+   font-size: 28px; 
    letter-spacing: 2px;
 }
 
@@ -96,7 +96,7 @@ hr {
    }
 
    body { 
-      font-size:12pt; 
+      font-size:9pt; 
       max-width:100%; 
    }
        
@@ -141,16 +141,22 @@ hr {
    a[href]:after {
     content: none !important;
   }
-  p {
-    font-size: 10pt;
+  p, td, td p {
+    font-size: 9pt;
   }
 }
 
 .resume-table {
-    width: 100%
+    width: 100%;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 .resume-table td {
-    padding: 1.5px 5px 3px 1.5px
+    padding: 1.5px 5px 0 1.5px
+}
+.resume-table td[colspan="5"] {
+    padding-top: 0px;
+    padding-bottom: 4px;
 }
 /* align the dates column */
 .resume-table td:nth-child(5) {
@@ -195,15 +201,30 @@ ul, ol {
 }
 
 /* the markdown parser is bugging and placing some <li> outside of their <ul>
-these rules correct their appearance */
+these rules correct their appearance 
 ul li {
   padding-left: 5px;
 }
 ul {
   padding-left: 12px;
+} */
+
+/* creating list indent manually due to above bug */
+td p {
+    margin: 0;
+    padding-left: 7.5px;
+    text-indent: -7.5px;
+}
+
+td p:first-child {
+    margin-top: 0;
 }
 
 p {
+  margin: 0 0 2px 0;
+}
+
+p:last-child {
   margin-bottom: 5px; 
 }
 
@@ -214,8 +235,12 @@ p {
 }
 
 #selected-items {
-  margin-top: -9px;
+    z-index: 100;
+    margin-bottom: -2.5px;
+    position: relative;
 }
+
+div.section.level3
 
 #selected-items+div+.level3>h3 {
   margin-top: -3px;
