@@ -143,7 +143,9 @@ dat %>% filter(type == "table") %>%
 
 ```{r summary, results='asis', fig.height=.75, fig.width=7.5, fig.align='center'}
 # summary chart
-allEntries <- filter(dat, type == "text")
+allEntries <- filter(dat, type == "text") %>%
+  mutate(subgroup = droplevels(subgroup),
+         subgroup = forcats::fct_relevel(subgroup, "Textbook Chapters", after = 1))
 cat("\n## ", as.character(allEntries$group[1]), "\n")
 if(params$condensed) {
   cat('<p id="selected-items">Selected items (complete listing available at [wmurphyrd.github.io/resume](http://wmurphyrd.github.io/resume/))</p>')
